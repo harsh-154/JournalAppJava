@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 //@EqualsAndHashCode
 //use @DATA for all these
 @Data
+@NoArgsConstructor
 public class JournalEntry {
     @Id
     private String id;
