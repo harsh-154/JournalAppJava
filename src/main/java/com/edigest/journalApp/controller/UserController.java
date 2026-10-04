@@ -1,31 +1,32 @@
 package com.edigest.journalApp.controller;
 
 import com.edigest.journalApp.entity.Users;
+import com.edigest.journalApp.repository.UserRepository;
 import com.edigest.journalApp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
 @RestController
-@RequestMapping("/User")
+@RequestMapping("/user")
 //in memory db
 public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
-    public List<Users> getAll() {
-        return userService.getAllEntries();
-    }
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping
     public ResponseEntity<Users> createUser(@RequestBody Users myEntry) {
         try {
 //            myEntry.setTime(LocalDateTime.now());
-            userService.saveEntry(myEntry);
+            userService.saveNewUser(myEntry);
             return new ResponseEntity<>(HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -66,10 +67,18 @@ public class UserController {
 //            }
 //            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 //    }
-    @PutMapping("/{username}")
+    @DeleteMapping
+    public ResponseEntity<?> deleteUserById(){
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        userRepository.deleteByUsername(authentication.getName());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @PutMapping
     public ResponseEntity<Users> updateEntryByUsername(
-            @RequestBody Users updatedEntry, @PathVariable String userName) {
-            Users userInDb=userService.findByUsername(userName);
+            @RequestBody Users updatedEntry) {
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        String name=authentication.getName();
+            Users userInDb=userService.findByUsername(name);
             if(userInDb!=null){
                 userInDb.setUsername(updatedEntry.getUsername());
                 userInDb.setPassword(updatedEntry.getPassword());

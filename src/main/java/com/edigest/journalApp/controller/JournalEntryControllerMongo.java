@@ -26,7 +26,7 @@ public class JournalEntryControllerMongo {
         Users users=userService.findByUsername(username);
         List<JournalEntry> all=users.getJournalEntries();
         if(all!=null && !all.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(all,HttpStatus.OK);
         }else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 

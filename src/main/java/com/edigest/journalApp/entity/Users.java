@@ -2,6 +2,7 @@ package com.edigest.journalApp.entity;
 
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Document(collection = "users")
 @Data
+@NoArgsConstructor
 public class Users {
     @Id
     private Object id;
@@ -25,5 +27,5 @@ public class Users {
 
     @DBRef //it will keep reference of journal entries otherwise it wont be possible
     private List<JournalEntry> journalEntries=new ArrayList<>();
-
+    private List<String> roles;
 }
